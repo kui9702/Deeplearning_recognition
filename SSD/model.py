@@ -27,7 +27,7 @@ class EzDetectConfig(object):
         priorConfig = [[0.10,0.25,2],
                        [0.25,0.40,2,3],
                        [0.40,0.55,2,3],
-                       [0.55,0.70,2,3]
+                       [0.55,0.70,2,3],
                        [0.7,0.85,2]]
         self.mboxes = []
         for i in range(len(priorConfig)):

@@ -16,9 +16,9 @@ def buildPredBoxes(config):
     for i in range(len(config.mboxes)):
         l = config.mboxes[i][0]
         wid = config.featureSize[l][0]
-        hei = config.featureSize[l][l]
+        hei = config.featureSize[l][1]
 
-        wbox = config.mboxes[i][l]
+        wbox = config.mboxes[i][1]
         hbox = config.mboxes[i][2]
 
         for y in range(hei):
@@ -26,10 +26,10 @@ def buildPredBoxes(config):
                 xc = (x + 0.5) / wid  # x y位置取每个feature map像素的中心店来计算
                 yc = (y + 0.5) / hei
 
-                xmin = max(0, xc - wbox / 2)
-                ymin = max(0, yc - hbox / 2)
-                xmax = min(1, xc + wbox / 2)
-                ymax = min(1, yc + hbox / 2)
+                # xmin = max(0, xc - wbox / 2)
+                # ymin = max(0, yc - hbox / 2)
+                # xmax = min(1, xc + wbox / 2)
+                # ymax = min(1, yc + hbox / 2)
 
                 xmin = xc - wbox / 2
                 ymin = yc - hbox / 2
@@ -68,43 +68,43 @@ def sampleEzDetect(config, bboxes):  # 在voc_dataset.py的vocDataset类中用�
         iouValues, iouSequence = torch.max(iouViewer, 0)
 
         predIndex = iouSequence[0] // len(bboxes)
-        bboxeindex = iouSequence[0] % len(bboxes)
+        bboxIndex = iouSequence[0] % len(bboxes)
 
         if (iouValues[0] > 0.1):
-            selectedSamples[ii * 6 + 1] = bboxes[bboxeindex][0]
-            selectedSamples[ii * 6 + 2] = bboxes[bboxeindex][1]
-            selectedSamples[ii * 6 + 3] = bboxes[bboxeindex][2]
-            selectedSamples[ii * 6 + 4] = bboxes[bboxeindex][3]
-            selectedSamples[ii * 6 + 5] = bboxes[bboxeindex][4]
+            selectedSamples[ii * 6 + 1] = bboxes[bboxIndex][0]
+            selectedSamples[ii * 6 + 2] = bboxes[bboxIndex][1]
+            selectedSamples[ii * 6 + 3] = bboxes[bboxIndex][2]
+            selectedSamples[ii * 6 + 4] = bboxes[bboxIndex][3]
+            selectedSamples[ii * 6 + 5] = bboxes[bboxIndex][4]
             selectedSamples[ii * 6 + 6] = predIndex
             ii += 1
         else:
             break
 
-        iouMatrix[:, bboxeindex] = -1
+        iouMatrix[:, bboxIndex] = -1
         iouMatrix[predIndex, :] = -1
         iouMatrix2[predIndex, :] = -1
 
     for i in range(len(predBoxes)):
         v, _ = iouMatrix2[i].max(0)
         predIndex = i
-        bboxeindex = _[0]
+        bboxIndex = _[0]
 
         if (v[0] > 0.7):  # anchor与真实值的IOU大于0.7的正样本
-            selectedSamples[ii * 6 + 1] = bboxes[bboxeindex][0]
-            selectedSamples[ii * 6 + 2] = bboxes[bboxeindex][1]
-            selectedSamples[ii * 6 + 3] = bboxes[bboxeindex][2]
-            selectedSamples[ii * 6 + 4] = bboxes[bboxeindex][3]
-            selectedSamples[ii * 6 + 5] = bboxes[bboxeindex][4]
+            selectedSamples[ii * 6 + 1] = bboxes[bboxIndex][0]
+            selectedSamples[ii * 6 + 2] = bboxes[bboxIndex][1]
+            selectedSamples[ii * 6 + 3] = bboxes[bboxIndex][2]
+            selectedSamples[ii * 6 + 4] = bboxes[bboxIndex][3]
+            selectedSamples[ii * 6 + 5] = bboxes[bboxIndex][4]
             selectedSamples[ii * 6 + 6] = predIndex
             ii = ii + 1
 
         elif (v[0] > 0.5):
-            selectedSamples[ii * 6 + 1] = bboxes[bboxeindex][0] * -1
-            selectedSamples[ii * 6 + 2] = bboxes[bboxeindex][1]
-            selectedSamples[ii * 6 + 3] = bboxes[bboxeindex][2]
-            selectedSamples[ii * 6 + 4] = bboxes[bboxeindex][3]
-            selectedSamples[ii * 6 + 5] = bboxes[bboxeindex][4]
+            selectedSamples[ii * 6 + 1] = bboxes[bboxIndex][0] * -1
+            selectedSamples[ii * 6 + 2] = bboxes[bboxIndex][1]
+            selectedSamples[ii * 6 + 3] = bboxes[bboxIndex][2]
+            selectedSamples[ii * 6 + 4] = bboxes[bboxIndex][3]
+            selectedSamples[ii * 6 + 5] = bboxes[bboxIndex][4]
             selectedSamples[ii * 6 + 6] = predIndex
             ii = ii + 1
     selectedSamples[0] = ii

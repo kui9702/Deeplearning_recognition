@@ -44,7 +44,7 @@ def getVOCInfo(xmlFile):
         name = ann.find('name').text
         newAnn = {}
         newAnn['category_id'] = name
-        bbox = ann.findall('bndbox')
+        bbox = ann.find('bndbox')
         newAnn['bbox'] = [-1, -1, -1, -1]
         newAnn['bbox'][0] = float(bbox.find('xmin').text)
         newAnn['bbox'][1] = float(bbox.find('ymin').text)
@@ -60,7 +60,7 @@ class vocDataset(data.Dataset):
         self.isTraining = isTraining
         self.config = config
 
-        normalize = transforms.Normalize(mean={0.485, 0.456, 0.406},
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                          std=[0.229, 0.224, 0.225])  # 使用均值和方差对图片的RGB指进行归一化
         # （也可以使用其他方法）
         self.transformer = transforms.Compose([transforms.ToTensor(),
@@ -157,6 +157,7 @@ class vocDataset(data.Dataset):
         else:
             num = len(allTestingData) - (len(allTestingData) % self.config.batchSize)
             return num
+
 
 vocClassID = {}
 for i in range(len(vocClassName)):

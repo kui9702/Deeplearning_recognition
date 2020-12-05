@@ -101,10 +101,12 @@ def doValidate():
     return score
 
 
-for t in range(50):
-    adjust_learning_rate(optimizer, t)
-    doTrain(t)
-    score = doValidate()
-    if (t % 5 == 0):
-        torch.save(mymodel.state_dict(), "model/model_{}_{}.pth".format(t,
+if __name__ == "__main__":
+    for t in range(50):
+        adjust_learning_rate(optimizer, t)
+        doTrain(t)
+        score = doValidate()
+        if (t % 5 == 0):
+            torch.save(mymodel.state_dict(), "model/model_{}_{}.pth".format(t,
                                                                         str(score)[:4]))
+
